@@ -19,7 +19,7 @@
   /* Type */
   --font-display: 'Archivo Black', 'Arial Black', sans-serif;
   --font-body: 'Montserrat', arial, sans-serif;
-  --step-hero: clamp(2.25rem, 5vw + 1rem, 4.25rem);
+  --step-hero: clamp(2rem, 4.5vw + 1rem, 3.75rem);
   --step-h2: clamp(1.75rem, 2.5vw + 1rem, 2.5rem);
   --step-h3: clamp(1.25rem, 1.2vw + 1rem, 1.5rem);
 
