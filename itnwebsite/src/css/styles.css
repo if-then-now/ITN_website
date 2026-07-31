@@ -467,6 +467,97 @@ h1, h2, h3, h4, p { margin: 0; }
 .pillar-card__link:hover { text-decoration: underline; }
 
 /* ==========================================================================
+   Portfolio (project cards)
+   ========================================================================== */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+.project-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.project-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-card-hover);
+}
+.project-card__body {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.project-card__eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+}
+.project-card__body h3 {
+  font-family: var(--font-display);
+  font-size: var(--step-h3);
+  text-transform: uppercase;
+}
+.project-card__body p { color: var(--color-ink-soft); font-size: 0.95rem; }
+.project-card__tag {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-line);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-ink);
+}
+
+/* ==========================================================================
+   Community cards
+   ========================================================================== */
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+.community-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.community-card__eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+}
+.community-card h3 {
+  font-family: var(--font-display);
+  font-size: var(--step-h3);
+  text-transform: uppercase;
+}
+.community-card p { color: var(--color-ink-soft); font-size: 0.95rem; }
+.community-card__tag { color: var(--color-ink); }
+.community-card__link {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+.community-card__link:hover { text-decoration: underline; }
+
+/* ==========================================================================
    About cards
    ========================================================================== */
 .about-grid {

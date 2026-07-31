@@ -7,7 +7,7 @@ community STEM program, and the ITN intern think tank — given equal billing pe
 
 Static HTML/CSS/JS. No build step, no dependencies, no package manager.
 
-- `itnwebsite/ifthennow.html` — the page
+- `itnwebsite/index.html` — the page
 - `itnwebsite/src/css/styles.css` — all styling, design tokens live in `:root` at the top of the file
 - `itnwebsite/src/js/main.js` — mobile nav, scroll-based nav highlighting, reveal-on-scroll, contact form handling; all tunable values live in the `SITE_CONFIG` object at the top of the file
 
@@ -15,15 +15,21 @@ Static HTML/CSS/JS. No build step, no dependencies, no package manager.
 
 No install required. Either:
 
-- Double-click `itnwebsite/ifthennow.html` to open it directly in a browser, or
+- Double-click `itnwebsite/index.html` to open it directly in a browser, or
 - Serve it so relative paths behave exactly like production:
 
 ```bash
 # from the project root
 cd itnwebsite
 python -m http.server 8000
-# then open http://localhost:8000/ifthennow.html
+# then open http://localhost:8000/
 ```
+
+## Deploying to GoDaddy hosting
+
+Everything needed to go live is in the `itnwebsite/` folder — no build step, no `npm install`. See
+[`itnwebsite/README.md`](itnwebsite/README.md#deploying-to-godaddy-hosting) for the full
+download-and-upload walkthrough for whoever manages the GoDaddy account.
 
 ## Known gaps to close before launch
 

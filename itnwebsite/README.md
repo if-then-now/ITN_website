@@ -7,7 +7,7 @@ community STEM program, and the ITN intern think tank — given equal billing pe
 
 Static HTML/CSS/JS. No build step, no dependencies, no package manager.
 
-- `ifthennow.html` — the page
+- `index.html` — the page
 - `src/css/styles.css` — all styling, design tokens live in `:root` at the top of the file
 - `src/js/main.js` — mobile nav, scroll-based nav highlighting, reveal-on-scroll, contact form handling; all tunable values live in the `SITE_CONFIG` object at the top of the file
 
@@ -15,14 +15,47 @@ Static HTML/CSS/JS. No build step, no dependencies, no package manager.
 
 No install required. Either:
 
-- Double-click `ifthennow.html` to open it directly in a browser, or
+- Double-click `index.html` to open it directly in a browser, or
 - Serve it so relative paths behave exactly like production:
 
 ```bash
 # from the project root
 python -m http.server 8000
-# then open http://localhost:8000/ifthennow.html
+# then open http://localhost:8000/
 ```
+
+## Deploying to GoDaddy hosting
+
+Everything needed to go live is in this `itnwebsite/` folder — no build step, no `npm install`.
+
+**1. Get the files.** On GitHub: **Code → Download ZIP** on the repo (or `git clone` the repo URL if
+you have git). Unzip it — the files you need are inside `itnwebsite/`:
+
+```
+itnwebsite/
+├── index.html
+└── src/
+    ├── css/styles.css
+    └── js/main.js
+```
+
+**2. Upload to GoDaddy**, preserving that exact folder structure (`index.html` must sit next to the
+`src/` folder, not inside it):
+
+- **If you have a GoDaddy Web Hosting / cPanel plan:** log in to GoDaddy → **My Products → Web
+  Hosting → Manage → File Manager** (or connect over FTP with the credentials in that same panel).
+  Open the `public_html` folder (this is the document root for your domain) and upload `index.html`
+  and the `src/` folder into it. If an old site's files are already in `public_html`, move or back
+  those up first rather than deleting them, in case anything is still needed.
+- **If your domain is on GoDaddy's "Website Builder" / "Website + Marketing" product instead:** that
+  tool does not accept raw HTML/CSS/JS file uploads — it only supports its own drag-and-drop editor
+  (with a very limited custom-HTML embed block). To host this file as-is, the domain needs a
+  traditional hosting plan (cPanel/Web Hosting, above) instead. Check **My Products** in the GoDaddy
+  account to see which product the domain is currently attached to.
+
+**3. Verify.** Visiting the domain should load `index.html` automatically, because `index.html` is
+the standard default filename every web server looks for at a folder's root — no extra
+configuration needed.
 
 ## Known gaps to close before launch
 
