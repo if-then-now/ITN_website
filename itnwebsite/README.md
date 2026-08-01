@@ -40,9 +40,9 @@ reference in case the hosting decision is ever revisited.
 as the document root. There is no build command — the site is static.
 
 **1. Connect the repo.** On Netlify: **Add new site → Import an existing project → GitHub →
-`if-then-now/ITN_website`**. Pick the branch to deploy (`beta` today, or `main` once the work is
-merged there). Leave the build command empty and confirm the publish directory reads `itnwebsite`;
-`netlify.toml` supplies both, so the fields should already be filled in. Deploy.
+`if-then-now/ITN_website`**. Set the production branch to **`main`** — that is the reviewed,
+approved state of the site. Leave the build command empty and confirm the publish directory reads
+`itnwebsite`; `netlify.toml` supplies both, so the fields should already be filled in. Deploy.
 
 You'll get a `*.netlify.app` URL immediately. Check the site there before touching DNS — nothing
 about the live domain changes until step 3.

@@ -33,6 +33,10 @@ registered at GoDaddy and only DNS is repointed. Full walkthrough, including the
 and the order to retire the old site in, is in
 [`itnwebsite/README.md`](itnwebsite/README.md#deploying-to-netlify).
 
+**`main` is the deployed branch.** Netlify's production branch is `main`, so anything merged there
+goes live. Work on a feature branch and merge in once it has been reviewed in a browser at both
+desktop and mobile widths — several bugs in this repo were only visible at one of the two.
+
 Why not GoDaddy: `www.ifthennow.com` currently runs on GoDaddy **Website Builder**, which does not
 accept HTML/CSS/JS uploads at all. Hosting it at GoDaddy would have meant buying an additional
 cPanel plan, and Website Builder has no equivalent of Netlify's built-in form handling.
