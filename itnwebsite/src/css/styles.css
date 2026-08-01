@@ -74,7 +74,10 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-img { max-width: 100%; display: block; }
+/* height: auto is load-bearing — without it, an img carrying width/height
+   attributes keeps its attribute height while max-width shrinks the width,
+   which stretches the image vertically. */
+img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; }
 ul { margin: 0; padding: 0; }
 h1, h2, h3, h4, p { margin: 0; }
