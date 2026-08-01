@@ -10,6 +10,10 @@ Static HTML/CSS/JS. No build step, no dependencies, no package manager.
 - `index.html` — the page
 - `src/css/styles.css` — all styling, design tokens live in `:root` at the top of the file
 - `src/js/main.js` — mobile nav, scroll-based nav highlighting, reveal-on-scroll, contact form handling; all tunable values live in the `SITE_CONFIG` object at the top of the file
+- `assets/` — every image the site uses, served locally (no external CDN dependency)
+
+Note that `url()` paths inside `styles.css` resolve relative to the stylesheet, so the hero
+background is `../../assets/hero.jpg` — not `assets/hero.jpg`.
 
 ## Run locally
 
@@ -34,6 +38,7 @@ you have git). Unzip it — the files you need are inside `itnwebsite/`:
 ```
 itnwebsite/
 ├── index.html
+├── assets/          <- all 10 images; must be uploaded too or the site renders blank panels
 └── src/
     ├── css/styles.css
     └── js/main.js
@@ -50,8 +55,14 @@ itnwebsite/
 - **If your domain is on GoDaddy's "Website Builder" / "Website + Marketing" product instead:** that
   tool does not accept raw HTML/CSS/JS file uploads — it only supports its own drag-and-drop editor
   (with a very limited custom-HTML embed block). To host this file as-is, the domain needs a
-  traditional hosting plan (cPanel/Web Hosting, above) instead. Check **My Products** in the GoDaddy
-  account to see which product the domain is currently attached to.
+  traditional hosting plan (cPanel/Web Hosting, above) instead.
+
+> **Confirmed as of 2026-08-01:** `www.ifthennow.com` is currently served by **Website Builder**, not
+> cPanel hosting. The live response headers report `Server: DPS/2.0.0-beta` and preload assets from
+> `website-builder-data-prod`, both of which are Website Builder signatures. So the second bullet is
+> the situation that applies: **this site cannot be uploaded to the domain's current plan.** Going
+> live requires either adding a GoDaddy Web Hosting (cPanel) plan and repointing the domain, or
+> hosting the static files elsewhere and repointing DNS while the domain stays registered at GoDaddy.
 
 **3. Verify.** Visiting the domain should load `index.html` automatically, because `index.html` is
 the standard default filename every web server looks for at a folder's root — no extra
@@ -64,10 +75,12 @@ configuration needed.
   site, and none should be guessed. Wire it up to a real form service (Formspree, GoDaddy Forms,
   a serverless function, etc.) and set the endpoint there. Until then the form shows a friendly
   message pointing visitors to LinkedIn instead of failing silently.
-- **Images are hot-linked from the old GoDaddy CDN** (`img1.wsimg.com`) so the redesign could ship
-  without re-uploading assets. Before decommissioning the GoDaddy site, download these images and
-  serve them locally (e.g. from an `assets/` folder) so the site doesn't break if that CDN account
-  is ever closed.
-- **No git repository exists yet in this folder.** `.claude/CLAUDE.md` calls for feature branches
-  and PRs into `dev` — run `git init`, connect the `if-then-now/ITN_website` remote, and push a
-  first commit before following that workflow.
+Closed since the first draft:
+
+- ~~Images are hot-linked from the old GoDaddy CDN (`img1.wsimg.com`)~~ — **fixed.** All 9 CDN
+  images were downloaded at the exact sizes/crops the old site rendered them and now live in
+  `assets/`. This mattered more than it first looked: that CDN belongs to the Website Builder
+  product itself, so cancelling the old site would have broken every image on the new one.
+  `og:image` and `twitter:image` still need absolute URLs for social scrapers, so they point at
+  `https://ifthennow.com/assets/hero.jpg` — update that host if the site lands on a different
+  domain.

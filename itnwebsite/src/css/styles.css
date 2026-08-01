@@ -291,7 +291,8 @@ h1, h2, h3, h4, p { margin: 0; }
   display: flex;
   align-items: center;
   color: #fff;
-  background: var(--color-dark) url('https://img1.wsimg.com/isteam/ip/74360eff-348e-4568-8793-5b65546263dc/3d.jpg/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:1920,m') center / cover no-repeat;
+  /* Path is relative to this stylesheet (src/css/), not to index.html */
+  background: var(--color-dark) url('../../assets/hero.jpg') center / cover no-repeat;
   isolation: isolate;
 }
 .hero::before {
@@ -427,6 +428,17 @@ h1, h2, h3, h4, p { margin: 0; }
   border-radius: 999px;
   z-index: 1;
 }
+/* Line-art artwork rather than a cropped photo: show the whole illustration on a
+   light brand tint, and drop the darkening overlay that would swallow the ink. */
+.pillar-card__media--illustration {
+  background-color: #fff6ea;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  padding: 0.75rem;
+}
+.pillar-card__media--illustration::after { display: none; }
+
 .pillar-card__body {
   padding: var(--space-md) var(--space-md) var(--space-lg);
   display: flex;
