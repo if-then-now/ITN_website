@@ -446,18 +446,18 @@
           </div>
 
           <!--
-            Posts to the Pages Function at functions/api/contact.js, which validates
-            the submission and emails it on. bot-field is the honeypot: real visitors
-            never see or fill it, so the function discards anything that has.
-            The action is set so the form still targets the right place if JS fails.
+            Netlify Forms: data-netlify makes Netlify capture submissions at deploy time.
+            Because main.js submits over fetch rather than a native post, the hidden
+            form-name field is required — Netlify matches it to route the submission.
+            bot-field is the honeypot; real visitors never see or fill it.
           -->
           <form id="contact-form" class="form reveal" name="contact" method="POST"
-                action="/api/contact" novalidate>
+                data-netlify="true" netlify-honeypot="bot-field" novalidate>
+            <input type="hidden" name="form-name" value="contact" />
             <p class="is-hidden" aria-hidden="true">
               <label>Leave this field empty<input name="bot-field" tabindex="-1" autocomplete="off" /></label>
             </p>
-            <!-- Name is optional, matching the function, which falls back to
-                 "(not given)". Only the starred fields are required. -->
+            <!-- Name is deliberately optional; only the starred fields are required. -->
             <div class="field">
               <label for="name">Name</label>
               <input id="name" name="name" type="text" autocomplete="name" />
