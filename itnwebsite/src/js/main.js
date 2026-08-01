@@ -15,10 +15,10 @@ const SITE_CONFIG = {
   form: {
     selector: '#contact-form',
     statusSelector: '#contact-form-status',
-    // TODO: replace with a real form backend (e.g. Formspree, GoDaddy Forms, a
-    // serverless endpoint) before launch. Left unset on purpose rather than
-    // guessed — no working endpoint was found on the previous live site.
-    endpoint: '',
+    // Netlify Forms captures any POST to a path on the site and routes it by the
+    // form-name field in the body, so the site root is the endpoint. Blank this
+    // out and the form degrades to the fallback note instead of silently failing.
+    endpoint: '/',
     fallbackEmailNote: 'Prefer email? Reach the team directly via LinkedIn below while the form is being connected.',
   },
 };
@@ -129,15 +129,27 @@ function initContactForm() {
       return;
     }
 
-    const data = new FormData(form);
+    // The form carries novalidate so we control the messaging, which means the
+    // required attributes are ours to enforce — otherwise empty submissions post.
+    if (!form.checkValidity()) {
+      status.dataset.state = 'error';
+      status.textContent = 'Please fill in your email and message before sending.';
+      form.reportValidity();
+      return;
+    }
+
     status.dataset.state = '';
     status.textContent = 'Sending…';
 
     try {
+      // Netlify expects AJAX submissions url-encoded, not as multipart FormData.
       const response = await fetch(endpoint, {
         method: 'POST',
-        body: data,
-        headers: { Accept: 'application/json' },
+        body: new URLSearchParams(new FormData(form)),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          Accept: 'application/json',
+        },
       });
       if (!response.ok) throw new Error('Request failed');
       status.dataset.state = 'success';

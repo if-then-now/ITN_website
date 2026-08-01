@@ -26,22 +26,26 @@ python -m http.server 8000
 # then open http://localhost:8000/
 ```
 
-## Deploying to GoDaddy hosting
+## Deploying
 
-Everything needed to go live is in the `itnwebsite/` folder — no build step, no `npm install`. See
-[`itnwebsite/README.md`](itnwebsite/README.md#deploying-to-godaddy-hosting) for the full
-download-and-upload walkthrough for whoever manages the GoDaddy account.
+**Host: Netlify.** `netlify.toml` publishes the `itnwebsite/` folder — no build step. The domain stays
+registered at GoDaddy and only DNS is repointed. Full walkthrough, including the contact form setup
+and the order to retire the old site in, is in
+[`itnwebsite/README.md`](itnwebsite/README.md#deploying-to-netlify).
+
+Why not GoDaddy: `www.ifthennow.com` currently runs on GoDaddy **Website Builder**, which does not
+accept HTML/CSS/JS uploads at all. Hosting it at GoDaddy would have meant buying an additional
+cPanel plan, and Website Builder has no equivalent of Netlify's built-in form handling.
 
 ## Known gaps to close before launch
 
-- **Contact form has no backend.** `itnwebsite/src/js/main.js` → `SITE_CONFIG.form.endpoint` is
-  intentionally left blank — no working form endpoint or public contact email was found on the
-  previous live site, and none should be guessed. Wire it up to a real form service (Formspree,
-  GoDaddy Forms, a serverless function, etc.) and set the endpoint there. Until then the form shows
-  a friendly message pointing visitors to LinkedIn instead of failing silently.
+- **Netlify Forms email notifications need switching on in the dashboard.** The form is wired up and
+  verified in code, but until a notification address is added, submissions are only stored in the
+  Netlify dashboard and nobody is emailed.
+
+## Closed since the first draft
+
+- ~~**Contact form has no backend**~~ — **fixed**; now posts to Netlify Forms, with spam honeypot and
+  client-side validation. Details in [`itnwebsite/README.md`](itnwebsite/README.md).
 - ~~**Images are hot-linked from the old GoDaddy CDN** (`img1.wsimg.com`)~~ — **fixed**; all images
   now ship locally in `itnwebsite/assets/`.
-- **The domain's current GoDaddy plan can't host this site.** `www.ifthennow.com` runs on GoDaddy
-  Website Builder, which does not accept HTML/CSS/JS uploads. See
-  [`itnwebsite/README.md`](itnwebsite/README.md#deploying-to-godaddy-hosting) for what going live
-  actually requires.

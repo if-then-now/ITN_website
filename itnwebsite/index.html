@@ -445,7 +445,18 @@
             </div>
           </div>
 
-          <form id="contact-form" class="form reveal" novalidate>
+          <!--
+            Netlify Forms: data-netlify makes Netlify capture submissions at deploy time.
+            Because main.js submits over fetch rather than a native post, the hidden
+            form-name field is required — Netlify matches it to route the submission.
+            bot-field is the honeypot; real visitors never see or fill it.
+          -->
+          <form id="contact-form" class="form reveal" name="contact" method="POST"
+                data-netlify="true" netlify-honeypot="bot-field" novalidate>
+            <input type="hidden" name="form-name" value="contact" />
+            <p class="is-hidden" aria-hidden="true">
+              <label>Leave this field empty<input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+            </p>
             <div class="field">
               <label for="name">Name</label>
               <input id="name" name="name" type="text" autocomplete="name" required />
@@ -460,7 +471,7 @@
             </div>
             <button class="btn btn--primary" type="submit">Send</button>
             <p id="contact-form-status" class="form__status" role="status" aria-live="polite"></p>
-            <p class="form__note">This form is not yet connected to a mailbox — use LinkedIn for a guaranteed reply in the meantime.</p>
+            <p class="form__note">We typically reply within one business day.</p>
           </form>
         </div>
       </div>
