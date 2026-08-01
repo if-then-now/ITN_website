@@ -15,10 +15,9 @@ const SITE_CONFIG = {
   form: {
     selector: '#contact-form',
     statusSelector: '#contact-form-status',
-    // Netlify Forms captures any POST to a path on the site and routes it by the
-    // form-name field in the body, so the site root is the endpoint. Blank this
-    // out and the form degrades to the fallback note instead of silently failing.
-    endpoint: '/',
+    // The Pages Function at functions/api/contact.js. Blank this out and the form
+    // degrades to the fallback note instead of silently failing.
+    endpoint: '/api/contact',
     fallbackEmailNote: 'Prefer email? Reach the team directly via LinkedIn below while the form is being connected.',
   },
 };
@@ -142,7 +141,6 @@ function initContactForm() {
     status.textContent = 'Sending…';
 
     try {
-      // Netlify expects AJAX submissions url-encoded, not as multipart FormData.
       const response = await fetch(endpoint, {
         method: 'POST',
         body: new URLSearchParams(new FormData(form)),
@@ -151,13 +149,24 @@ function initContactForm() {
           Accept: 'application/json',
         },
       });
-      if (!response.ok) throw new Error('Request failed');
+      if (!response.ok) {
+        // The function explains refusals in a body we can show verbatim; fall
+        // back to a generic line if there is nothing useful to read.
+        let detail = '';
+        try {
+          detail = (await response.json())?.error || '';
+        } catch {
+          /* non-JSON response — keep the generic message */
+        }
+        throw new Error(detail);
+      }
       status.dataset.state = 'success';
       status.textContent = 'Thanks — we will be in touch shortly.';
       form.reset();
     } catch (error) {
       status.dataset.state = 'error';
-      status.textContent = 'Something went wrong sending that. Please try again or reach out via LinkedIn.';
+      status.textContent =
+        error.message || 'Something went wrong sending that. Please try again or reach out via LinkedIn.';
     }
   });
 }

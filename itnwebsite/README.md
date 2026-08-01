@@ -11,60 +11,105 @@ Static HTML/CSS/JS. No build step, no dependencies, no package manager.
 - `src/css/styles.css` — all styling, design tokens live in `:root` at the top of the file
 - `src/js/main.js` — mobile nav, scroll-based nav highlighting, reveal-on-scroll, contact form handling; all tunable values live in the `SITE_CONFIG` object at the top of the file
 - `assets/` — every image the site uses, served locally (no external CDN dependency)
+- `functions/api/contact.js` — Cloudflare Pages Function backing the contact form
+- `_headers` — security headers Cloudflare Pages applies at the edge
 
 Note that `url()` paths inside `styles.css` resolve relative to the stylesheet, so the hero
 background is `../../assets/hero.jpg` — not `assets/hero.jpg`.
 
 ## Run locally
 
-No install required. Either:
-
-- Double-click `index.html` to open it directly in a browser, or
-- Serve it so relative paths behave exactly like production:
+For the static site alone, no install is needed:
 
 ```bash
-# from the project root
+# from this itnwebsite/ folder
 python -m http.server 8000
 # then open http://localhost:8000/
 ```
 
+The contact form will show an error under that server, because the Pages Function isn't running —
+that's expected, not a bug. To exercise the form too, use Wrangler, which runs the Function the same
+way Cloudflare does:
+
+```bash
+# from this itnwebsite/ folder
+npx wrangler pages dev . \
+  --binding RESEND_API_KEY=<key> CONTACT_TO=you@example.com
+```
+
+To test without sending real email, point it at a local mock instead:
+
+```bash
+npx wrangler pages dev . \
+  --binding RESEND_API_KEY=test CONTACT_TO=you@example.com \
+  RESEND_ENDPOINT=http://127.0.0.1:8990/
+```
+
 ## Deploying
 
-**Chosen host: Netlify.** The domain stays registered at GoDaddy; only DNS is repointed. See
-[Deploying to Netlify](#deploying-to-netlify) below. The GoDaddy upload route is kept after it for
-reference in case the hosting decision is ever revisited.
+**Host: Cloudflare Pages.** Netlify was ruled out: its free and Personal plans do not support
+connecting a **private, organization-owned** GitHub repository, and this repo is private under the
+`if-then-now` org. Cloudflare Pages has no such restriction, so the repo stays private and
+org-owned. The GoDaddy upload route is kept at the end for reference.
 
-### Deploying to Netlify
+### Deploying to Cloudflare Pages
 
-`netlify.toml` at the repo root already sets `publish = "itnwebsite"`, so Netlify serves that folder
-as the document root. There is no build command — the site is static.
+**1. Create the project.** Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to
+Git** → `if-then-now/ITN_website`. Then set:
 
-**1. Connect the repo.** On Netlify: **Add new site → Import an existing project → GitHub →
-`if-then-now/ITN_website`**. Set the production branch to **`main`** — that is the reviewed,
-approved state of the site. Leave the build command empty and confirm the publish directory reads
-`itnwebsite`; `netlify.toml` supplies both, so the fields should already be filled in. Deploy.
+| Setting | Value |
+| --- | --- |
+| Production branch | `main` |
+| Framework preset | None |
+| Build command | *(empty)* |
+| Build output directory | `/` |
+| Root directory | `itnwebsite` |
 
-You'll get a `*.netlify.app` URL immediately. Check the site there before touching DNS — nothing
-about the live domain changes until step 3.
+Root directory is the one that matters. Setting it to `itnwebsite` makes everything Pages needs
+self-contained in that folder — `index.html`, `assets/`, `functions/` and `_headers` all resolve
+from there. This was verified locally with `npx wrangler pages dev .` run from inside `itnwebsite`:
+Wrangler compiled the Function and reported "Parsed 1 valid header rule", confirming both are
+picked up at that level.
 
-**2. Confirm the contact form.** Netlify detects the form at deploy time (it's in the static HTML,
-which is what detection requires). Open **Site configuration → Forms** and you should see a form
-named `contact`. Submit a test message through the deployed site and confirm it appears there, then
-add your address under **Forms → Form notifications → Email notification** so submissions are
-emailed rather than only sitting in the dashboard. The free tier covers 100 submissions/month.
+**2. Add the environment variables.** Settings → **Environment variables**, for both Production and
+Preview:
 
-**3. Point the domain.** In Netlify: **Domain management → Add a custom domain →
-`ifthennow.com`**. Netlify will tell you which records to create. In GoDaddy: **My Products →
-Domains → DNS**, then set those records — typically an `A` record for the apex and a `CNAME` for
-`www`. Netlify provisions the HTTPS certificate automatically once DNS resolves; allow up to a few
-hours for propagation. Do not cancel the Website Builder subscription until the new site is live and
-verified — see the warning in step 4.
+| Variable | Value | Notes |
+| --- | --- | --- |
+| `RESEND_API_KEY` | your Resend API key | **Encrypt this one** |
+| `CONTACT_TO` | where enquiries should land | e.g. your Microsoft 365 address |
+| `CONTACT_FROM` | *(optional)* | omit to use Resend's onboarding sender |
 
-**4. Only then retire the old site.** All images now ship from `assets/`, so the new site no longer
-depends on the Website Builder CDN. Still, confirm the new site renders completely on the real domain
-before cancelling anything, and note that the existing GoDaddy contact form stops collecting the
-moment the old site goes away — so make sure Netlify Forms notifications are working first (step 2)
-or there will be a window where inbound leads are lost.
+Get the key from [resend.com](https://resend.com) — the free tier covers 3,000 emails/month. Leaving
+`CONTACT_FROM` unset means no DNS work at all to start: Resend's onboarding sender is used, and
+`reply_to` is set to the visitor so replying from your mail client reaches them directly.
+
+If you later want a branded sender like `noreply@ifthennow.com`, verify a **subdomain**
+(e.g. `send.ifthennow.com`) in Resend rather than the root domain. A subdomain gets its own
+SPF/DKIM records and leaves the root domain's existing Microsoft 365 SPF and MX untouched. Adding a
+second SPF record to the root domain would break mail — a domain may only have one.
+
+**3. Deploy and check.** You'll get a `*.pages.dev` URL. Verify the page renders with images, then
+send a test enquiry through the form and confirm it arrives. Nothing about the live domain has
+changed at this point.
+
+**4. Point the domain.** Custom domains → Set up a domain. Note the constraint:
+
+- **Apex (`ifthennow.com`) requires the domain to be a zone on Cloudflare**, i.e. moving nameservers
+  off GoDaddy. Cloudflare cannot serve an apex domain over external DNS, because DNS does not permit
+  CNAME records at the zone apex. If you take this route, export every existing GoDaddy DNS record
+  first and confirm Cloudflare imported the `MX`, SPF and `MS=` verification records **before**
+  changing nameservers, then send yourself a test email immediately after. Getting this wrong breaks
+  company email.
+- **`www.ifthennow.com` only** works over external DNS: add a `CNAME` from `www` to
+  `<project>.pages.dev` at GoDaddy and use GoDaddy domain forwarding to send the apex to `www`. Your
+  nameservers, MX and SPF are never touched. Slightly less tidy, materially lower risk.
+
+**5. Only then retire the old site.** All images ship from `assets/`, so the new site no longer
+depends on the Website Builder CDN. Confirm the new site renders on the real domain first, and note
+that the existing GoDaddy contact form stops collecting the moment the old site goes away — so make
+sure a test enquiry has actually reached your inbox (step 3) or there will be a window where inbound
+leads are lost.
 
 ### Deploying to GoDaddy hosting (reference — not the chosen route)
 
@@ -108,21 +153,33 @@ configuration needed.
 
 ## Known gaps to close before launch
 
-- **Netlify Forms email notifications must be switched on in the dashboard.** The form itself is
-  wired up and verified in code, but Netlify only stores submissions until you add a notification
-  address (see step 2 above). Until then messages land in the dashboard and nobody gets an email.
+- **`RESEND_API_KEY` and `CONTACT_TO` must be set in the Cloudflare dashboard.** Without them the
+  Function returns a 500 and tells the visitor to use LinkedIn instead — it fails honestly rather
+  than silently, but no enquiry reaches you until they're set. See step 2 above.
+- **No rate limiting on the Function.** A determined spammer could burn through the Resend quota
+  even with the honeypot in place. If that ever happens, add a Cloudflare rate-limiting rule on
+  `/api/contact` (no code change needed) or a Turnstile challenge.
 
 ## Closed since the first draft
 
-- ~~Contact form has no backend~~ — **fixed.** The form now posts to Netlify Forms:
-  `data-netlify="true"` plus a hidden `form-name` field (required because `main.js` submits over
-  `fetch` rather than a native post), a `bot-field` honeypot for spam, and
-  `SITE_CONFIG.form.endpoint = '/'`. Netlify wants AJAX submissions url-encoded rather than as
-  multipart `FormData`, so the request body is a `URLSearchParams`. Client-side validation was added
-  because the form carries `novalidate`, which had been disabling the `required` attributes and
-  letting empty submissions through. Verified against a local capture server: empty submits are
-  blocked with no POST, and a filled submit sends `form-name=contact` with all fields correctly
-  encoded.
+- ~~Contact form has no backend~~ — **fixed.** `functions/api/contact.js` validates the submission
+  and emails it via Resend, with `reply_to` set to the visitor so replying goes straight back to
+  them. Notes on the implementation:
+  - The route exports `onRequest`, not just `onRequestPost`. With only `onRequestPost`, a `GET` to
+    `/api/contact` fell through to the static asset handler and returned **200 with the homepage
+    HTML**, which crawlers would index as duplicate content. Non-POST methods now get a 405.
+  - Submitted text is HTML-escaped before going into the email body.
+  - The `bot-field` honeypot returns 200 without sending, so a bot cannot tell it was caught.
+  - Client-side validation was added because the form carries `novalidate`, which had been disabling
+    the `required` attributes and letting empty submissions through.
+  - `name` is optional on both sides. It previously carried `required` in the HTML while the server
+    treated it as optional, so leaving it blank produced the misleading message "Please fill in your
+    email and message". Only starred fields are required now.
+
+  Verified with `wrangler pages dev` against a mock Resend endpoint: valid submissions send exactly
+  one email with the right recipient and `reply_to`; honeypot submissions send none; malformed
+  emails, missing fields and oversized messages are each rejected with their own message; and
+  GET/PUT/DELETE/HEAD all return 405 with an `Allow: POST` header.
 
   Worth knowing: the **old** GoDaddy Website Builder site had a working contact form. Launching
   before this was fixed would have replaced a working form with one that silently discarded

@@ -1,0 +1,11 @@
+# Cloudflare Pages headers. Replaces the [[headers]] block netlify.toml used to carry.
+#
+# Deliberately no long-lived cache headers on /assets/*: those filenames are not
+# content-hashed, so an immutable cache would keep serving a stale image after a
+# graphic is replaced. Cloudflare's defaults revalidate, which is what we want
+# until filenames are fingerprinted.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin

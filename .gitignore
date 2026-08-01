@@ -1,0 +1,11 @@
+# Local tooling only — the site itself has no build step and no dependencies.
+node_modules/
+package-lock.json
+
+# Wrangler's local state, created by `npx wrangler pages dev`
+.wrangler/
+itnwebsite/.wrangler/
+
+# OS cruft
+Thumbs.db
+.DS_Store
