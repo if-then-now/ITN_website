@@ -73,7 +73,7 @@ WARP Speed Ahead is a community STEM program founded in memory of Dr. Sadanand S
 
 What began with a handful of 4th and 5th grade students has grown into one of the most active youth STEM programs in Prince George's County, Maryland. The Spring 2026 cohort welcomed 14 cadets — the biggest in program history — culminating in a rockets and pizza celebration that has become a WARP tradition.
 
-WARP Speed Ahead is now a confirmed STEM Specialty Program partner at Duvall High School, launching the next school year and bringing the program into the high school pipeline for the first time.
+WARP Speed Ahead is now a confirmed STEM Specialty Program partner at Duval High School, launching the next school year and bringing the program into the high school pipeline for the first time.
 
 When we finish, we begin.
 
