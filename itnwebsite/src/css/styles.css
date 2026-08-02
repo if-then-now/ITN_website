@@ -291,17 +291,40 @@ h1, h2, h3, h4, p { margin: 0; }
 @media (max-width: 1199px) {
   .nav__links {
     position: fixed;
-    inset: var(--nav-height) 0 0 0;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    /* Height is set explicitly rather than via `bottom: 0`. .site-header carries
+       backdrop-filter, which makes it the containing block for position:fixed
+       descendants — so `bottom: 0` resolved against the 76px header and collapsed
+       this panel to ~80px, hiding six of the seven links behind an inner
+       scrollbar. An explicit height is immune to which ancestor wins. */
+    height: calc(100vh - var(--nav-height));
+    height: calc(100dvh - var(--nav-height));
     flex-direction: column;
     align-items: flex-start;
     padding: var(--space-lg) var(--space-md);
     background: var(--color-dark);
     gap: var(--space-md);
-    transform: translateX(100%);
-    transition: transform var(--transition);
+    /* Parked above the viewport, not off to the right. A panel sitting at
+       translateX(100%) made the document twice the viewport width and let the
+       whole page be dragged sideways to reveal it; overflow above the top edge
+       is never scrollable, so hiding upwards cannot create that. It also reads
+       naturally: a full-width panel drops down from behind the header. */
+    transform: translateY(-100%);
+    /* visibility, not just transform. Translated out of view the panel still
+       overlaps the header and swallows taps meant for the hamburger, so the menu
+       could not be opened at all. A hidden element is not hit-tested. The 0s
+       delay holds it visible for the length of the slide-out. */
+    visibility: hidden;
+    transition: transform var(--transition), visibility 0s linear var(--transition);
     overflow-y: auto;
   }
-  .nav__links.is-open { transform: translateX(0); }
+  .nav__links.is-open {
+    transform: translateY(0);
+    visibility: visible;
+    transition: transform var(--transition), visibility 0s;
+  }
   .nav__links a { font-size: 1.1rem; }
 }
 
@@ -358,7 +381,7 @@ h1, h2, h3, h4, p { margin: 0; }
 .services {
   margin-top: var(--space-md);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
   gap: 0.6rem 1.5rem;
   list-style: none;
 }
@@ -506,7 +529,8 @@ h1, h2, h3, h4, p { margin: 0; }
    ========================================================================== */
 .projects {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  /* Same guard as .community-grid — overflowed below a ~368px viewport. */
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: var(--space-lg);
   margin-top: var(--space-xl);
 }
@@ -554,7 +578,10 @@ h1, h2, h3, h4, p { margin: 0; }
    ========================================================================== */
 .community-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  /* min(360px, 100%) not a bare 360px: a fixed track minimum cannot shrink, so on
+     any viewport under ~408px the card stayed 360px wide and pushed the page
+     sideways — that covers most iPhones. */
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
   gap: var(--space-lg);
   margin-top: var(--space-xl);
 }
@@ -664,6 +691,10 @@ h1, h2, h3, h4, p { margin: 0; }
   gap: 0.75rem;
   align-items: flex-start;
 }
+/* A flex item defaults to min-width:auto and so refuses to shrink below its
+   content, which pushed the contact block past the screen on ~320px phones. */
+.contact__channel > div { min-width: 0; }
+.contact__channel a { overflow-wrap: anywhere; }
 .contact__channel svg {
   flex: none;
   width: 22px;
@@ -687,6 +718,10 @@ h1, h2, h3, h4, p { margin: 0; }
 .field label { font-size: 0.85rem; font-weight: 700; }
 .field input,
 .field textarea {
+  /* Inputs carry an intrinsic width of about 20 characters; without this they
+     refuse to shrink and push the form off narrow screens. */
+  width: 100%;
+  min-width: 0;
   font-family: var(--font-body);
   font-size: 0.95rem;
   padding: 0.75rem 0.9rem;
