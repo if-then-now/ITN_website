@@ -5,7 +5,9 @@
  * Update here — never inline these elsewhere in the file.
  */
 const SITE_CONFIG = {
-  navBreakpoint: 900,
+  // Must match the nav media query in styles.css, or the mobile menu will not
+  // close when the viewport crosses into the desktop layout.
+  navBreakpoint: 1200,
   revealSelector: '.reveal',
   navToggleSelector: '.nav__toggle',
   navLinksSelector: '.nav__links',

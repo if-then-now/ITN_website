@@ -146,6 +146,8 @@ h1, h2, h3, h4, p { margin: 0; }
   border: 2px solid transparent;
   cursor: pointer;
   text-decoration: none;
+  /* A button label breaking mid-phrase reads as a layout fault, never as design. */
+  white-space: nowrap;
   transition: transform var(--transition), background var(--transition), color var(--transition), border-color var(--transition);
 }
 .btn:hover { transform: translateY(-2px); }
@@ -204,6 +206,9 @@ h1, h2, h3, h4, p { margin: 0; }
   gap: 0.6rem;
   text-decoration: none;
   color: #fff;
+  /* The brand was being compressed to 66px of its natural 173px by the nav's
+     flex row, which broke the wordmark across lines. It is not negotiable space. */
+  flex: none;
 }
 .brand__mark {
   width: 40px;
@@ -216,14 +221,22 @@ h1, h2, h3, h4, p { margin: 0; }
   font-size: 1rem;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .nav__links {
   display: flex;
   align-items: center;
-  gap: var(--space-lg);
+  /* Seven items at the old 2.5rem gap overflowed the row and forced the flex
+     items below their text width, wrapping the two-word labels onto two and
+     three lines. 1rem is what actually fits: the nav is capped at
+     --content-max, so a vw-based gap keeps growing after the container has
+     stopped and overflows on wide screens. Fixed units are correct here. */
+  gap: 1rem;
   list-style: none;
 }
+/* Never compress a label below its natural width... */
+.nav__links li { flex: none; }
 .nav__links a {
   text-decoration: none;
   color: #eee;
@@ -233,6 +246,8 @@ h1, h2, h3, h4, p { margin: 0; }
   text-transform: uppercase;
   position: relative;
   padding-block: 0.35rem;
+  /* ...and never break one across lines. */
+  white-space: nowrap;
 }
 .nav__links a::after {
   content: '';
@@ -247,7 +262,9 @@ h1, h2, h3, h4, p { margin: 0; }
 .nav__links a:hover::after,
 .nav__links a.is-active::after { right: 0; }
 
-.nav__cta { display: none; }
+/* Tighter than the default .btn padding purely to buy the nav row the width it
+   needs to keep every label on one line. */
+.nav__cta { display: none; flex: none; padding-inline: 1.25rem; }
 
 .nav__toggle {
   display: inline-flex;
@@ -263,12 +280,15 @@ h1, h2, h3, h4, p { margin: 0; }
 }
 .nav__toggle svg { width: 22px; height: 22px; }
 
-@media (min-width: 900px) {
+/* 1200px, not 900px: below this the brand, seven nowrap links and the CTA
+   genuinely do not fit on one row, and forcing them to overflowed the header.
+   Keep the hamburger until there is real room. Mirrored by SITE_CONFIG.navBreakpoint. */
+@media (min-width: 1200px) {
   .nav__toggle { display: none; }
   .nav__cta { display: inline-flex; }
 }
 
-@media (max-width: 899px) {
+@media (max-width: 1199px) {
   .nav__links {
     position: fixed;
     inset: var(--nav-height) 0 0 0;
