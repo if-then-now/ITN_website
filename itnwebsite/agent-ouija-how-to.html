@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How to use Agent Ouija — if-then-now LLC</title>
+  <meta name="description" content="A walkthrough of every tab in Agent Ouija, the open source multi-model AI platform built by the if-then-now Think Tank." />
+  <meta name="theme-color" content="#fe8510" />
+  <link rel="canonical" href="https://ifthennow.com/agent-ouija-how-to.html" />
+
+  <meta property="og:url" content="https://ifthennow.com/agent-ouija-how-to.html" />
+  <meta property="og:site_name" content="if-then-now LLC" />
+  <meta property="og:title" content="How to use Agent Ouija" />
+  <meta property="og:description" content="A walkthrough of every tab in Agent Ouija, the open source multi-model AI platform built by the if-then-now Think Tank." />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://ifthennow.com/assets/hero.jpg" />
+
+  <link rel="icon" href="assets/logo-mark.jpg" />
+  <link rel="apple-touch-icon" href="assets/logo-mark.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="src/css/styles.css" />
+  <link rel="stylesheet" href="src/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doc-content">Skip to content</a>
+
+  <header class="doc-header">
+    <div class="doc-header__bar">
+      <a class="brand" href="index.html">
+        <img class="brand__mark" src="assets/logo-mark.jpg" alt="if-then-now LLC logo" width="40" height="40" />
+        <span class="brand__name">if-then-now</span>
+      </a>
+      <a class="doc-header__back" href="index.html#portfolio">← Back to Portfolio</a>
+    </div>
+  </header>
+
+  <main class="doc" id="doc-content">
+    <h1 id="how-to-use-agent-ouija">How to use Agent Ouija</h1>
+    <p>A beginner-friendly walkthrough of every tab in the app. If you're
+    looking for install instructions, see <code>SETUP.md</code>; this
+    doc is what to do once the app is running at
+    <code>http://localhost:7860</code>.</p>
+    <h2 id="accessing-from-mobile">Accessing from mobile</h2>
+    <p>Agent Ouija runs on your host machine's <code>localhost</code> by default,
+    but it's designed to work great from a phone or tablet too — the
+    UI is responsive, and everything works exactly the same. The
+    recommended path is <a href="https://tailscale.com/" rel="noopener" target="_blank">Tailscale</a> (free
+    personal plan):</p>
+    <ol>
+    <li>Install Tailscale on the host + your mobile device, sign into
+    both with the same account, enable <strong>MagicDNS + HTTPS</strong> in
+    the Tailscale admin console.</li>
+    <li>On the host, run once:
+    <code>tailscale serve --bg --https=7860 http://localhost:7860</code></li>
+    <li>Bookmark the resulting URL on your phone
+    (e.g. <code>https://brainy.tail&lt;xxxx&gt;.ts.net:7860</code>). Real TLS
+    cert — no browser warnings, no port-forwarding, no exposure
+    to the public internet.</li>
+    </ol>
+    <p>Full walkthrough with screenshots in <code>SETUP.md</code>.</p>
+    <h2 id="table-of-contents">Table of contents</h2>
+    <ol>
+    <li><a href="#tab-1--agent-ouija">Tab 1 — Agent Ouija</a></li>
+    <li><a href="#tab-2--dev-workshop">Tab 2 — Dev Workshop</a></li>
+    <li><a href="#tab-3--files">Tab 3 — Files</a></li>
+    <li><a href="#tab-4--persona--jarvis-for-agent-ouija">Tab 4 — Persona</a></li>
+    <li><a href="#tab-5--data--accounting-and-training-stats">Tab 5 — Data</a></li>
+    </ol>
+    <hr />
+    <h2 id="tab-1--agent-ouija">Tab 1 — Agent Ouija</h2>
+    <p>The main workspace. Everything you'd normally do — ask, get an
+    answer, save the thread, edit a picture — happens here. Five
+    collapsible sections top to bottom.</p>
+    <h3 id="-question--response--the-place-to-chat">💬 Question &amp; Response — the place to chat</h3>
+    <p>Type your question in the textbox. Buttons on the row underneath:</p>
+    <ul>
+    <li><strong>Ask For Revelations</strong> — Fires the question at every selected
+    model. Each model answers in parallel; the response window shows
+    them one at a time (slideshow). Fluent, open-ended reasoning —
+    the models can use their training data plus whatever RAG /
+    document context you've referenced.</li>
+    <li><strong>📖 Ask the Lore</strong> — Same shape as Ask For Revelations, but the
+    models are constrained to answer ONLY from what's in the RAG
+    database (your ingested documents + any private corpus). If the
+    answer isn't there, they respond <em>&quot;Not in the lore.&quot;</em> Great for
+    testing edge-AI recall and minimising token spend. Every Lore
+    response leads its status line with a short note reminding you
+    what mode you're in.</li>
+    <li><strong>✋ Cancel</strong> — Aborts an in-flight round. Pending model calls
+    are dropped; already-in-flight ones finish but their results are
+    discarded.</li>
+    <li><strong>📂 Upload Files</strong> — Drag files (documents or pictures) here to
+    add them to the repository. Documents go to <code>docs/</code> and get
+    auto-ingested into RAG. Pictures + videos go to <code>docs/media/</code>
+    and stay parked until you reference them by name.</li>
+    <li><strong>💾 Save Seance</strong> — Save the current thread (question, answers,
+    history, seance name) so you can reload it later from the
+    Seances section. Auto-saves on every subsequent Ask once loaded.</li>
+    </ul>
+    <p>Two small buttons appear under each response:</p>
+    <ul>
+    <li><strong>💾 Add This to RAG</strong> — Ingest the current answer into the RAG
+    database so future questions can retrieve it as context. Useful
+    when a model gave a particularly good answer you want to
+    preserve.</li>
+    <li><strong>📧 Send File</strong> — Ships any file referenced in your question
+    (from <code>docs/</code> or <code>docs/media/</code>) as an email attachment via SMTP.
+    Reference the exact filename in the prompt (e.g.
+    <em>&quot;send <code>spec.pdf</code>&quot;</em>) and click. Requires SMTP config in <code>.env</code>
+    — see the Files section below for setup.</li>
+    </ul>
+    <p><strong>File repository interaction:</strong> any file in <code>docs/</code> or
+    <code>docs/media/</code> can be referenced by name in your prompt. The app
+    detects the filename and either injects the doc contents as
+    context, attaches the media to a vision-capable model, or (for
+    image edits) routes to Gemini.</p>
+    <h3 id="-executive-boardroom--llms-working-together">👑 Executive Boardroom — LLMs working together</h3>
+    <p>Turns the boardroom into a single-answer flow. Instead of showing
+    you five separate answers, one selected model synthesizes the
+    group into one response.</p>
+    <p><strong>Fields inside the accordion:</strong></p>
+    <ul>
+    <li><strong>🌐 Always Use Boardroom Mode checkbox</strong> — When ON, every Ask
+    automatically triggers boardroom mode (peers run, then the
+    executive synthesizes). When OFF, Ask returns individual peer
+    responses; you trigger boardroom mode on demand via the tier
+    buttons.</li>
+    <li><strong>Sr. Execs. with selected Jr. Execs checkbox</strong> — Only affects
+    Senior tier: when checked, local models are included as peers
+    alongside cloud models. When unchecked, Senior runs clouds only.</li>
+    <li><strong>Three tier buttons</strong> — Junior Execs, Senior Execs, The C-Suite.
+    Clicking any of them runs a fresh peer set at that tier and
+    synthesizes with an executive matching the tier:
+    <ul>
+    <li><strong>Junior Execs</strong> — Local models only, one local synthesizes.</li>
+    <li><strong>Senior Execs</strong> — Cloud models, one cloud synthesizes.</li>
+    <li><strong>The C-Suite</strong> — Web-capable cloud models (Claude, GPT-4o,
+    Gemini), one of them synthesizes.</li>
+    </ul>
+    </li>
+    <li><strong>👑 Executive Model dropdown</strong> — Which specific model plays
+    executive at the currently-selected tier. Filtered to tier-
+    eligible models.</li>
+    <li><strong>💾 Make this the Default Executive</strong> — Remembers your pick
+    across sessions.</li>
+    </ul>
+    <p><strong>Groq note:</strong> Groq's free-tier per-minute token cap (8,000 tokens/
+    minute) can't fit boardroom synthesis on more than a couple peer
+    responses. A warning banner appears under the dropdown whenever
+    Groq is picked as the executive. <strong>Recommendation:</strong> use Claude
+    Sonnet or GPT-4o for Senior / C-Suite tiers on the free tier.
+    Groq works fine as a peer, and shines on shorter prompts — it's
+    just the exec synthesis that blows the cap. Groq's Dev Tier lifts
+    the cap to 25k+ TPM, at which point you can bump
+    <code>max_input_tokens</code> in <code>config.py</code> and use it for exec too.</p>
+    <h3 id="-the-assistant--calendar-and-news-reporter">🤖 The Assistant — Calendar and News reporter</h3>
+    <p>Two external-API surfaces that plug into the same RAG the models
+    use to answer questions.</p>
+    <h4 id="google-calendar-setup-step-by-step">Google Calendar setup (step-by-step)</h4>
+    <ol>
+    <li>
+    <p><strong>Enable the Calendar API in Google Cloud.</strong></p>
+    <ul>
+    <li>Go to <a href="https://console.cloud.google.com/" rel="noopener" target="_blank">https://console.cloud.google.com/</a>. Log in with the
+    Google account whose calendar you want Agent Ouija to read.</li>
+    <li>Create a new project (top-left dropdown → &quot;New Project&quot;). Name
+    it something like &quot;Agent Ouija&quot;.</li>
+    <li>Once you're in the project: open the hamburger menu → APIs &amp;
+    Services → Library. Search for &quot;Google Calendar API&quot; and
+    click Enable.</li>
+    </ul>
+    </li>
+    <li>
+    <p><strong>Configure the OAuth consent screen.</strong></p>
+    <ul>
+    <li>Hamburger → APIs &amp; Services → OAuth consent screen.</li>
+    <li>Pick <strong>External</strong> unless your Google account is on a Google
+    Workspace. Fill in the required fields (app name, support
+    email, developer email). Save.</li>
+    <li>Add your Google account as a <strong>Test user</strong> on the same page.</li>
+    </ul>
+    </li>
+    <li>
+    <p><strong>Create OAuth credentials.</strong></p>
+    <ul>
+    <li>APIs &amp; Services → Credentials → &quot;Create Credentials&quot; → OAuth
+    client ID.</li>
+    <li>Application type: <strong>Desktop app</strong>. Name it anything.</li>
+    <li>Click <strong>Download JSON</strong> on the created client. Save the file
+    as <code>gcal_credentials.json</code> inside your Agent Ouija
+    installation's <code>data/</code> folder (i.e., wherever <code>scripts/</code> is,
+    go up one and into <code>data/</code>).</li>
+    </ul>
+    </li>
+    <li>
+    <p><strong>Authorize inside Agent Ouija.</strong></p>
+    <ul>
+    <li>In the Agent Ouija tab, open <strong>🤖 The Assistant</strong>. You'll see
+    &quot;🕯 Calendar: <strong>not authorised</strong>&quot; and a <strong>🔐 Authorize Google
+    Calendar</strong> button.</li>
+    <li>Click Authorize. A browser window opens; consent as your
+    Google account. The token is cached in <code>data/gcal_token.json</code>
+    for future sessions.</li>
+    <li>Weekly re-auth expected while the OAuth app is in Testing
+    status — Google enforces a 7-day refresh-token expiry there.
+    Just click Authorize again when it lapses.</li>
+    </ul>
+    </li>
+    <li>
+    <p><strong>Use it.</strong></p>
+    <ul>
+    <li><strong>🔄 Refresh Calendar into RAG</strong> — Pulls your upcoming events
+    and adds them to ChromaDB. Any question after that (&quot;What's
+    on my calendar this week?&quot;) retrieves the events through RAG.</li>
+    <li><strong>📋 Show upcoming</strong> — Prints upcoming events inline without
+    touching RAG.</li>
+    <li><strong>➕ Add Event</strong> — Fill in the form (title / date / times),
+    click, event lands in your Google Calendar.</li>
+    <li><strong>🗑 Delete Event</strong> — Pick from a dropdown of upcoming events,
+    type YES to confirm.</li>
+    </ul>
+    </li>
+    </ol>
+    <h4 id="newsapi-setup-step-by-step">NewsAPI setup (step-by-step)</h4>
+    <ol>
+    <li>
+    <p><strong>Get a NewsAPI key.</strong></p>
+    <ul>
+    <li>Sign up at <a href="https://newsapi.org/register" rel="noopener" target="_blank">https://newsapi.org/register</a>. Free tier: 100
+    requests/day.</li>
+    <li>Copy the API key from your dashboard.</li>
+    </ul>
+    </li>
+    <li>
+    <p><strong>Add the key to your Agent Ouija install.</strong></p>
+    <ul>
+    <li>Run <code>python install.py --add-api-key</code> OR edit <code>.env</code> directly
+    (at <code>%USERPROFILE%\.config\agentouija\.env</code> after the security
+    hardening commit — see SETUP.md for the exact location).</li>
+    <li>Set <code>NEWSAPI_KEY=&lt;paste-your-key-here&gt;</code> and save.</li>
+    </ul>
+    </li>
+    <li>
+    <p><strong>Use it.</strong></p>
+    <ul>
+    <li>Under 🤖 The Assistant, open the <strong>📰 News Pulls</strong> sub-accordion.</li>
+    <li>Four buttons: <strong>⚾ Sports (baseball)</strong>, <strong>🌍 World</strong>,
+    <strong>🇺🇸 National</strong>, <strong>📰 Pull All (3 credits)</strong>.</li>
+    <li>Click any category. The headlines get cached to
+    <code>docs/news/YYYY-MM-DD_&lt;category&gt;.md</code> and auto-ingested into
+    RAG. Every credit = one API request against your daily 100
+    free-tier allowance.</li>
+    <li>Any question like &quot;What's happening in baseball today?&quot; now
+    retrieves cached headlines as RAG context.</li>
+    </ul>
+    </li>
+    </ol>
+    <h3 id="-scoring-controls--edge-ai-training">🎯 Scoring Controls — Edge AI training</h3>
+    <p>Score each response 0-4 (baseball scale) so Agent Ouija can build
+    a training dataset from your best answers:</p>
+    <ul>
+    <li><strong>0 — whiff</strong> (excluded from training export)</li>
+    <li><strong>1 — contact</strong> (weight 0.25)</li>
+    <li><strong>2 — base hit</strong> (weight 0.50)</li>
+    <li><strong>3 — extra bases</strong> (weight 0.75)</li>
+    <li><strong>4 — home run</strong> (weight 1.0 — &quot;couldn't tell it wasn't Claude&quot;)</li>
+    <li><strong>Valid Refusal</strong> — the model declined for its own safety policy
+    (excluded from quality stats).</li>
+    </ul>
+    <p><strong>Buttons:</strong></p>
+    <ul>
+    <li><strong>Score And Next</strong> — Log the score, move to the next model's
+    response in the round.</li>
+    <li><strong>Score + Add To RAG</strong> — Same, plus curate this response into
+    ChromaDB so future questions can retrieve it.</li>
+    <li><strong>Add To RAG (no score)</strong> — Curate without scoring.</li>
+    <li><strong>Retry Scoring</strong> — Re-review the current round from the start.</li>
+    <li><strong>Prev / Next / Skip</strong> — Slideshow navigation.</li>
+    <li><strong>Blind mode</strong> — Hide the model name while scoring, so you
+    score on quality alone (no anchoring to which vendor produced
+    the answer).</li>
+    </ul>
+    <p><strong>What &quot;training&quot; means here:</strong></p>
+    <ul>
+    <li><strong>RAG (Retrieval-Augmented Generation)</strong> — Every high-scoring
+    Q+A pair you Add To RAG becomes retrievable context for future
+    questions. This is a runtime improvement — no training run
+    required. The local models get sharper on your specific
+    domain just by accumulating good examples.</li>
+    <li><strong>LoRA (Low-Rank Adaptation) fine-tuning</strong> — When you're ready
+    for a bigger jump, <code>scripts/prepare_training.py</code> exports every
+    scored row (score ≥ 1) as a JSONL file suitable for Unsloth /
+    Axolotl / other LoRA trainers. Feed the JSONL into a fine-tune
+    and you get a local model that speaks in your domain.</li>
+    </ul>
+    <p><strong>The Reading</strong> — a composite metric: <code>(score / SCORE_MAX) / log(response_time + e)</code>. Rewards high scores AND fast responses.
+    Full breakdown per model on the Data tab.</p>
+    <p><strong>Training sessions:</strong> click <em>Save Training Checkpoint</em> on the
+    Data tab after each LoRA run. Subsequent rows are attributed to
+    that checkpoint, so the Δ Reading column shows whether your fine-
+    tune actually improved things.</p>
+    <h3 id="-the-models--the-workers">🤖 The Models — the workers</h3>
+    <p>Ten checkboxes total — five locals on the left, five clouds on
+    the right. Check any combination you want in a round.</p>
+    <p><strong>Master toggles</strong> at the top of each column flip every model on
+    or off at once, respecting tier eligibility (locals grey out at
+    High Energy, clouds grey out at Low).</p>
+    <p><strong>Upgrading a model:</strong></p>
+    <ul>
+    <li><strong>Local models:</strong> In the terminal on Brainy: <code>ollama pull llama3.3</code> (or any model tag from <a href="https://ollama.com/library" rel="noopener" target="_blank">https://ollama.com/library</a>).
+    Then in <code>config.py</code>, update the matching entry's <code>&quot;name&quot;</code> field
+    to the new tag. Restart Agent Ouija. Delete the old model with
+    <code>ollama rm llama3.2</code> when you're comfortable.</li>
+    <li><strong>Cloud models:</strong> Update the model id in that model's config
+    entry. E.g. <code>&quot;anthropic/claude-sonnet-4-6&quot;</code> →
+    <code>&quot;anthropic/claude-sonnet-4-7&quot;</code> when a new Sonnet ships. No pull
+    needed — restart the app and it picks up.</li>
+    </ul>
+    <p><strong>Any combination is valid.</strong> One local + two clouds. All ten. Zero
+    clouds. Whatever you check will run. The 🎯 Media rule is the one
+    exception: prompts referencing a picture / video only run when
+    exactly one model is checked (cost-control).</p>
+    <h3 id="-control-center--settings">⚙ Control Center — settings</h3>
+    <ul>
+    <li><strong>🔮 Mysticism Level dropdown</strong> — one of four modes:
+    <ul>
+    <li><strong>🟡🔥 Low Energy — Locals Only</strong> — free but slower; pure
+    local inference, no cloud, no web.</li>
+    <li><strong>🟠🔥 Medium Energy — Agile</strong> — cloud models pre-checked,
+    locals unchecked. Serper web search injected into every
+    checked model's prompt. Best default for most questions.</li>
+    <li><strong>🔴🔥 Medium Energy — Synergistic</strong> — clouds AND locals
+    pre-checked. Slower (more calls) but you get every angle.</li>
+    <li><strong>🔵🔥 High Energy — Native Web Search</strong> — only web-capable
+    clouds (Claude / GPT-4o / Gemini) run, and they use their
+    provider's native web search instead of Serper-fed context.</li>
+    </ul>
+    </li>
+    <li><strong>Navigation buttons</strong> — jump to the four hidden tabs:
+    <ul>
+    <li><strong>📊 Data</strong> — leaderboards, billing, backups, rollback, disk
+    usage, wipe controls.</li>
+    <li><strong>📁 Files</strong> — file repository, image editor, per-file Q+A.</li>
+    <li><strong>🛠 Dev Workshop</strong> — Python notebook + PowerShell CLI.</li>
+    <li><strong>🎭 Persona</strong> — persona files, voice picker, RAG toggles.</li>
+    </ul>
+    </li>
+    <li><strong>🔊 Voice checkbox</strong> — Piper TTS reads the current answer aloud
+    when checked. To change WHICH voice, go to the Persona tab's
+    Voice section, upload / pick a <code>.onnx</code> file, click <em>Set As
+    Default</em>.</li>
+    </ul>
+    <h3 id="-seances--saved-threads">🕯 Seances — saved threads</h3>
+    <p>A &quot;seance&quot; is a saved conversation with all the state it takes to
+    resume — question history, model responses, chosen executive
+    tier, thread accumulation.</p>
+    <ul>
+    <li><strong>📋 Load</strong> dropdown — every saved seance in <code>data/seances/</code>.
+    Pick and load; question box comes up blank so you can type a
+    follow-up, response window shows the full prior thread.</li>
+    <li><strong>📝 Rename</strong> — pick a seance, type a new name, click Rename.
+    Auto-updates the label in the dropdown.</li>
+    <li><strong>🗑 Delete</strong> — remove a seance file. Confirms first.</li>
+    <li><strong>💾 Save Seance</strong> button (in the main Ask row) — saves the
+    current thread. Existing seance? Overwrites in place. New?
+    Auto-slugifies from the question if you haven't given it a
+    name.</li>
+    <li><strong>＋ New Seance</strong> button (top of Agent Ouija tab) — clears
+    everything for a fresh start.</li>
+    </ul>
+    <p>Every seance is a JSON file in <code>data/seances/</code>, portable and
+    gitignored.</p>
+    <hr />
+    <h2 id="tab-2--dev-workshop">Tab 2 — Dev Workshop</h2>
+    <p>Two accordions. Both are shortcuts for programmatic work; you can
+    close either and just use the other.</p>
+    <h3 id="-notebook--run-python-code">📓 Notebook — run Python code</h3>
+    <p>Cell-based Python runner against Agent Ouija's model set. Split
+    your code with <code># %%</code> on its own line — each block becomes a cell.</p>
+    <p>Per-model checkboxes above the notebook drive iteration:</p>
+    <ul>
+    <li><strong>One model checked</strong> → code runs once; state persists across
+    Run clicks.</li>
+    <li><strong>Multiple checked</strong> → code runs once per model on an isolated
+    copy of state, results show up in the slideshow so you can
+    compare answers.</li>
+    </ul>
+    <p>Variables injected into your code's scope on every run:</p>
+    <ul>
+    <li><code>MODEL</code> — LiteLLM-format id (e.g. <code>&quot;openai/gpt-4o&quot;</code>,
+    <code>&quot;ollama_chat/llama3.2&quot;</code>)</li>
+    <li><code>MODEL_KEY</code> — config key (<code>&quot;gpt-4o&quot;</code>)</li>
+    <li><code>SELECTED_MODELS</code> — list of all checked keys</li>
+    </ul>
+    <p>Helpers in scope: <code>ask(prompt, model, system, temperature, max_tokens) → str</code>, <code>ask_all(prompt, …) → dict</code>,
+    <code>get_rag(question) → str | None</code>.</p>
+    <p>API keys come from <code>.env</code> — no <code>userdata.get(...)</code> setup needed.</p>
+    <h3 id="-cli--powershell">🖥️ CLI — PowerShell</h3>
+    <p>Runs PowerShell commands with a persistent working directory
+    tracked in the UI. Built-in <code>cd</code> handles wildcards. Output capped
+    at 20 KB per command, 60-second timeout.</p>
+    <p><strong>🚀 Launch Claude Code</strong> button spawns a detached PowerShell
+    window running <code>claude</code> from the current cwd — ideal for handing
+    off a piece of work to Claude Code interactively (the interactive
+    TTY can't render inside a Gradio textbox, hence the detached
+    window).</p>
+    <p><strong>Great use case:</strong> the CLI + Notebook combo is the fastest way to
+    test snippets of code the LLMs suggest before pasting them into a
+    real file. Ask a model <em>&quot;write me a quick script to X&quot;</em>, paste
+    the answer into the Notebook, click Run, iterate.</p>
+    <hr />
+    <h2 id="tab-3--files">Tab 3 — Files</h2>
+    <p>The <strong>file repository</strong> and everything you can do with the files
+    in it.</p>
+    <h3 id="-file-manager">📁 File Manager</h3>
+    <p>Two columns: <strong>Documents</strong> (<code>docs/</code>) and <strong>Media</strong> (<code>docs/media/</code>).</p>
+    <ul>
+    <li><strong>Documents</strong> — anything ingestible (<code>.md</code>, <code>.txt</code>, <code>.pdf</code>,
+    <code>.docx</code>, <code>.html</code>, <code>.json</code>, <code>.csv</code>, <code>.rtf</code>). Uploaded documents
+    auto-trigger RAG re-ingestion so ChromaDB stays in sync.</li>
+    <li><strong>Media</strong> — images (<code>.png</code>, <code>.jpg</code>, <code>.jpeg</code>, <code>.webp</code>, <code>.bmp</code>,
+    <code>.gif</code>) and videos. Not auto-ingested — media stays parked
+    until you reference it by name in a prompt.</li>
+    </ul>
+    <p>Both columns are pinned to a 180-pixel fixed height so the layout
+    stays symmetric regardless of contents. Each supports:</p>
+    <ul>
+    <li><strong>📂 Upload</strong> — multi-file upload; each file routes to the
+    correct column by extension.</li>
+    <li><strong>📝 Rename</strong> — pick a file from the dropdown, type a new name,
+    click Rename.</li>
+    <li><strong>🗑 Delete</strong> — pick + delete. Documents get an auto re-ingest;
+    media doesn't (nothing to re-ingest).</li>
+    </ul>
+    <p><strong>Photo editing (Gemini only, one-model rule):</strong> Only Gemini's
+    Nano Banana model can actually edit images. When you reference
+    an image + an edit verb in your prompt, the request routes to
+    Gemini regardless of what other models you have checked —
+    your selection is bypassed for that call. This bypass exists
+    because per-image token cost is 10-1000× a text token, so the
+    app enforces a one-model rule to keep spend predictable.</p>
+    <p><strong>Photo analysis (any vision-capable model):</strong> Simply referencing
+    an image without an edit verb (&quot;describe cat.jpg&quot;) lands as a
+    normal vision call to whatever model you have checked. Cloud
+    vision models (Claude, GPT-4o, Gemini) all support this. The
+    Files-tab uploader shows a <strong>per-model cost preview</strong> (Low /
+    Medium / High / Very High) before you attach the image so you
+    know what a run would cost.</p>
+    <h3 id="-work-with-files--qa-on-your-repository">💬 Work With File(s) — Q+A on your repository</h3>
+    <p>Section at the bottom of the tab. Uses the tab's own model panel
+    (same shape as the main Agent Ouija tab).</p>
+    <p><strong>Edit-intent keywords that trigger image editing:</strong></p>
+    <p><code>edit</code>, <code>add </code>, <code>remove</code>, <code>delete</code>, <code>change</code>, <code>replace</code>, <code>put </code>,
+    <code>insert</code>, <code>place </code>, <code>make it</code>, <code>make them</code>, <code>make the</code>, <code>erase</code>,
+    <code>fix</code>, <code>combine</code>, <code>merge</code>, <code>overlay</code>, <code>cover</code>, <code>draw</code>, <code>paint</code>,
+    <code>highlight</code>, <code>circle </code>, <code>meme</code>, <code>caption</code>, <code>text at</code>, <code>text on</code>,
+    <code>text to</code>, <code>text overlay</code>.</p>
+    <p><strong>Example edit prompts:</strong></p>
+    <ul>
+    <li><em>&quot;add a heart between the two people, wedding.png&quot;</em></li>
+    <li><em>&quot;put meme text 'not today' at the bottom of cat.jpg&quot;</em></li>
+    <li><em>&quot;remove the traffic cones from street.png&quot;</em></li>
+    <li><em>&quot;replace the sky with a sunset in landscape.jpg&quot;</em></li>
+    </ul>
+    <p><strong>Example non-edit prompts (fall through to normal vision analysis):</strong></p>
+    <ul>
+    <li><em>&quot;describe what's in <code>screenshot.png</code>&quot;</em></li>
+    <li><em>&quot;summarize the key data in <code>report.pdf</code>&quot;</em></li>
+    <li><em>&quot;compare the wording in <code>contract-v1.pdf</code> and <code>contract-v2.pdf</code>&quot;</em></li>
+    </ul>
+    <h3 id="-edited-output-preview">🎨 Edited output preview</h3>
+    <p>After a successful image edit, a preview image appears in the
+    &quot;Edited output preview&quot; panel below the response. Right-click the
+    image to save it locally. The edited file also lives on disk at
+    <code>docs/media/&lt;original-stem&gt;_edited_&lt;timestamp&gt;.&lt;ext&gt;</code>.</p>
+    <p><strong>Image editing is also available in the Agent Ouija tab.</strong> Same
+    detection rules — reference an image filename + edit verb in Ask
+    For Revelations and it routes to Gemini. The preview panel only
+    lives in the Files tab; in Agent Ouija you'll see the filename
+    in the response and can retrieve it via 📧 Send File.</p>
+    <h3 id="-send-file--smtp-setup">📧 Send File — SMTP setup</h3>
+    <p>Click 📧 Send File after referencing a file in your prompt to
+    email it as an attachment via SMTP.</p>
+    <p><strong>SMTP setup (Gmail example):</strong></p>
+    <ol>
+    <li>
+    <p><strong>Generate a Gmail App Password.</strong> At
+    <a href="https://myaccount.google.com/apppasswords" rel="noopener" target="_blank">https://myaccount.google.com/apppasswords</a>, sign in, select
+    &quot;Mail&quot; as the app and your device. Google returns a 16-
+    character password with no spaces. Copy it.</p>
+    </li>
+    <li>
+    <p><strong>Add SMTP config to <code>.env</code>.</strong> Run <code>python install.py --add-api-key</code> or edit <code>.env</code> directly:</p>
+    <pre><code>SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your.address@gmail.com
+SMTP_PASSWORD=&lt;the-16-char-app-password&gt;
+EMAIL_FROM=your.address@gmail.com
+EMAIL_TO=your.address@gmail.com    # or a different destination
+</code></pre>
+    </li>
+    <li>
+    <p><strong>Test it.</strong> Reference a file in a prompt (e.g. type
+    <code>spec.pdf</code>), click 📧 Send File. Status area confirms
+    delivery.</p>
+    </li>
+    </ol>
+    <p><strong>Other providers (Outlook / Fastmail / Proton bridge):</strong> same
+    shape, different <code>SMTP_HOST</code> and <code>SMTP_PORT</code>. Outlook: <code>smtp- mail.outlook.com</code> port 587. Proton bridge: <code>127.0.0.1</code> port 1025.
+    Port 465 handled automatically (implicit TLS).</p>
+    <p><strong>Multi-file:</strong> if your prompt references three files, one email
+    lands with three attachments. Cleaner than three emails.</p>
+    <hr />
+    <h2 id="tab-4--persona--jarvis-for-agent-ouija">Tab 4 — Persona — JARVIS for Agent Ouija</h2>
+    <p>Turn your Agent Ouija into any voice / character you want. Three
+    levels of customisation, from minimal to full immersion.</p>
+    <h3 id="the-three-persona-layers">The three persona layers</h3>
+    <p>Every model call starts with a <strong>system prompt</strong>. The Persona tab
+    lets you build that system prompt out of files:</p>
+    <ol>
+    <li>
+    <p><strong><code>system_core.md</code> (always)</strong> — the base personality. Ships
+    with a mystical Ouija voice (&quot;the pointer moves, you speak,
+    the pointer stops&quot;). You can replace this with your own
+    <code>system_core.md</code> — install.py preserves any existing file.</p>
+    </li>
+    <li>
+    <p><strong><code>enhanced_persona_main.md</code> (optional)</strong> — additional voice
+    rules that layer on top of <code>system_core.md</code>. Uploaded via the
+    <strong>Enhanced Persona Main</strong> row on the Persona tab. New upload
+    replaces the existing file.</p>
+    </li>
+    <li>
+    <p><strong><code>persona_&lt;name&gt;.md</code> + episodes (optional, enhanced-only)</strong> —
+    named character overlays. Uploaded via the <strong>Enhanced Persona
+    Files</strong> section. <code>persona_&lt;name&gt;.md</code> files route to <code>prompts/</code>;
+    anything else routes to <code>prompts/episodes/</code>. Multiple personas
+    can layer together; the model picks the register from question
+    context.</p>
+    </li>
+    </ol>
+    <h3 id="copyright-safe-corpus">Copyright-safe corpus</h3>
+    <p>The <strong>Copyright Files</strong> panel is for reference material
+    (transcripts, quote collections, source books) that would be
+    copyright-risky to commit. Files go to <code>Copyright/episodes/</code>,
+    which is <strong>gitignored by default</strong> — nothing you drop here ever
+    lands in a public git commit.</p>
+    <p>Clicking <strong>Re-ingest Copyright corpus</strong> chunks the files into a
+    SEPARATE ChromaDB collection (<code>mr_ouija_private</code>), distinct from
+    the main RAG. Enable the <strong>Use private corpus in retrieval</strong>
+    toggle and any question you ask retrieves relevant chunks from
+    this collection as extra context.</p>
+    <p>The gitignore safeguards:</p>
+    <ul>
+    <li><code>Copyright/</code> folder — gitignored entirely</li>
+    <li><code>prompts/</code> folder — gitignored entirely (personal personas)</li>
+    <li><code>data/chroma/</code> — gitignored (contains the private collection)</li>
+    <li><code>data/private_corpus_*.json</code> — gitignored (portable exports)</li>
+    </ul>
+    <p>You can safely share the repo publicly without any of your
+    persona overlays or copyrighted reference material coming with it.</p>
+    <h3 id="example-persona-setup">Example persona setup</h3>
+    <p>You could have Agent Ouija answer in a blended voice of, say,
+    <strong>a comedian known for observational humor</strong>, <strong>a popular cutthroat
+    business executive</strong>, and <strong>the most famous wizard ever</strong> —
+    combining their signature phrasings, timing, and worldview. The
+    enhanced stack loads all three <code>persona_*.md</code> files together;
+    the model picks whichever register fits your question. A
+    &quot;how do I run a meeting?&quot; question tilts toward the executive
+    voice; &quot;explain what's weird about airline peanuts&quot; leans
+    comedian; a life-advice question drifts wizard.</p>
+    <p>You'd:</p>
+    <ol>
+    <li>Drop three <code>.md</code> files into <code>prompts/</code> — <code>persona_comedian.md</code>,
+    <code>persona_executive.md</code>, <code>persona_wizard.md</code>. Each has voice
+    rules, catchphrases, worldview notes.</li>
+    <li>Drop episode transcripts / quote files into
+    <code>Copyright/episodes/</code> (any filenames — <code>comedian_ep_1.md</code>,
+    <code>executive_quotes.md</code>, etc.). Those get chunked into the
+    private ChromaDB collection when you click Re-ingest.</li>
+    <li>Turn on <strong>Enable enhanced persona for all models</strong> — every
+    cloud model now gets the enhanced stack. (Locals stay on
+    <code>system_core.md</code> only — quantised models drift under long
+    persona stacks.)</li>
+    <li>Turn on <strong>Use private corpus in retrieval</strong> — the models get
+    relevant transcript chunks alongside the persona stack.</li>
+    </ol>
+    <h3 id="voice-section">Voice section</h3>
+    <p>Piper TTS voices as <code>.onnx</code> + <code>.onnx.json</code> files in <code>voices/</code>.</p>
+    <ul>
+    <li><strong>Voice dropdown</strong> — pick from installed voices.</li>
+    <li><strong>Speaker ID</strong> — for multi-speaker voices (like <code>libritts</code>).</li>
+    <li><strong>Upload</strong> — drop a new voice pair; refresh the dropdown.</li>
+    <li><strong>Set As Default</strong> — writes <code>voices/active_voice.txt</code> so the
+    next launch loads this voice.</li>
+    </ul>
+    <p>Voices download from <a href="https://huggingface.co/rhasspy/piper-voices" rel="noopener" target="_blank">https://huggingface.co/rhasspy/piper-voices</a>.</p>
+    <h3 id="toggles">Toggles</h3>
+    <ul>
+    <li><strong>Enable enhanced persona for all models</strong> — flips every cloud
+    model onto the enhanced stack. Groq is auto-excluded because its
+    free-tier TPM cap can't fit the persona overlay (see the
+    Persona tab's inline note).</li>
+    <li><strong>Use private corpus in retrieval</strong> — enables the copyright
+    ChromaDB collection.</li>
+    <li><strong>Preview assembled prompt</strong> — see exactly what system prompt
+    every model would receive with the current toggles.</li>
+    </ul>
+    <hr />
+    <h2 id="tab-5--data--accounting-and-training-stats">Tab 5 — Data — accounting and training stats</h2>
+    <p>Everything numeric about your Agent Ouija usage lives here.</p>
+    <h3 id="-billing-details">💰 Billing Details</h3>
+    <p>Auto-loads on tab open. Four views of the same underlying
+    <code>arena_results</code> cost data:</p>
+    <ul>
+    <li><strong>Lifetime total (headline)</strong> — total dollars spent, total rows,
+    total tokens, first-row / latest-row timestamps.</li>
+    <li><strong>Window comparison table</strong> — Last 7 days / Last 30 days /
+    Since last checkpoint / Lifetime, in one glance.</li>
+    <li><strong>Per-model breakdown</strong> — every model, its row count, tokens,
+    cost.</li>
+    <li><strong>Per-provider roll-up</strong> — Anthropic / OpenAI / Google / Groq /
+    OpenRouter / Local, in one line each. Answers &quot;how much did I
+    spend at each provider total&quot; instantly.</li>
+    </ul>
+    <p><strong>🔄 Refresh Billing</strong> re-runs the query on demand.</p>
+    <p><strong>Provider dashboards</strong> — links open each cloud provider's usage
+    page in a new tab so you can cross-check.</p>
+    <h3 id="-historical--current-session-tables">📊 Historical + Current Session tables</h3>
+    <p>Sortable leaderboards with the following columns:</p>
+    <ul>
+    <li><strong>Model</strong> — display name.</li>
+    <li><strong>Avg Score</strong> — average score across all scored responses.</li>
+    <li><strong>Avg Arena</strong> — avg score on Arena-tab / Agent Ouija tab
+    responses.</li>
+    <li><strong>Avg Notebook</strong> — avg score on Dev Workshop / Notebook
+    responses.</li>
+    <li><strong>Avg Time</strong> — average response time in seconds.</li>
+    <li><strong>The Reading</strong> — the composite metric: <code>(score / SCORE_MAX) / log(time + e)</code>. Higher is better.</li>
+    <li><strong>Cost Reading</strong> — Reading adjusted for USD cost. Locals collapse
+    to Reading (cost = 0); clouds pay a smooth log penalty.</li>
+    <li><strong>Δ Reading</strong> — change since the last training checkpoint. Green
+    = improved after fine-tuning.</li>
+    <li><strong>Score buckets</strong> — count of home runs (4), extra bases (3),
+    hits (2), contacts (1), whiffs (0).</li>
+    <li><strong>Cost (USD)</strong> — total spend on this model, across all rows.</li>
+    <li><strong>RAG Adds</strong> — count of Add-To-RAG events attributed to this
+    model.</li>
+    </ul>
+    <p>Click any column header to sort. Historical = every row ever;
+    Current Session = rows since the last checkpoint.</p>
+    <h3 id="-training-checkpoints">🎯 Training Checkpoints</h3>
+    <p>Log a checkpoint after each LoRA fine-tune so the Δ Reading
+    column has something to compare against. Columns: Date, Name,
+    Model, Notes, Session Cost (USD).</p>
+    <p><strong>Add Checkpoint</strong> button — pops up a form for name + notes,
+    records the current arena_results timestamp as the checkpoint
+    boundary.</p>
+    <h3 id="-danger-zone--three-way-wipe">🗑 Danger Zone — three-way wipe</h3>
+    <ul>
+    <li><strong>Wipe Database</strong> — reveals three confirmation buttons.
+    <ul>
+    <li><strong>Yes, backup first</strong> — snapshots arena_scores.db,
+    chat_history.json, chroma/, seances/, news/ to
+    <code>data/backups/wipe_&lt;timestamp&gt;/</code> before wiping.</li>
+    <li><strong>Yes, no backup</strong> — wipes without a backup.</li>
+    <li><strong>No</strong> — cancels.</li>
+    </ul>
+    </li>
+    </ul>
+    <h3 id="-reset-ui-preferences">↩ Reset UI Preferences</h3>
+    <p>Wipes <code>data/preferences.json</code> — flips Mysticism Level back to
+    Low Energy, both Executive Boardroom checkboxes off. Non-
+    destructive to anything else.</p>
+    <h3 id="-time-based-rollback">⏰ Time-based Rollback</h3>
+    <p>Purge rows / files older than a chosen window. Amount +
+    unit (days/weeks/months) + target (ChromaDB, arena_scores.db,
+    Seances, News docs, All of the above).</p>
+    <ul>
+    <li><strong>🔍 Preview</strong> — dry counts, no writes.</li>
+    <li><strong>🗑 Purge (backup first)</strong> — requires typed YES. Always
+    snapshots to <code>data/backups/rollback_&lt;timestamp&gt;/</code> before
+    deleting.</li>
+    </ul>
+    <h3 id="-restore-from-backup">♻ Restore From Backup</h3>
+    <ul>
+    <li>Dropdown lists every snapshot in <code>data/backups/</code> (newest first).</li>
+    <li><strong>🔍 Preview</strong> — shows the contents of the selected snapshot.</li>
+    <li><strong>♻ Restore</strong> — requires typed YES. Overwrites live copies.
+    You have to restart the app afterward so DB handles + retriever
+    caches pick up the restored files.</li>
+    </ul>
+    <h3 id="-disk-usage">💾 Disk Usage</h3>
+    <p>Shows per-folder disk usage for: docs, media, prompts, Copyright,
+    ChromaDB, voices, seances, training exports, summaries, backups,
+    arena_scores.db, chat_history.json.</p>
+    <p>Click <strong>🔄 Refresh Sizes</strong> to rescan.</p>
+    <hr />
+    <h2 id="getting-help">Getting help</h2>
+    <ul>
+    <li>Command-line help: <code>python install.py --help</code>,
+    <code>python uninstall.py --help</code>.</li>
+    <li>Bug reports, feedback and feature requests: <a href="https://ifthennow.com/#contact">get in touch via ifthennow.com</a>.</li>
+    </ul>
+
+    <p class="doc__footer">
+      Built by the <a href="index.html#community">ITN Think Tank</a> at if-then-now LLC.
+      Questions? <a href="index.html#contact">Get in touch</a>.
+    </p>
+  </main>
+</body>
+</html>

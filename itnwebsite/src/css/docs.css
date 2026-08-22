@@ -1,0 +1,157 @@
+/* ==========================================================================
+   Documentation pages — long-form prose.
+
+   Loaded after styles.css and reuses its :root tokens, so brand colour and the
+   dark-mode overrides apply here for free. Only rules styles.css has no reason
+   to carry belong in this file.
+   ========================================================================== */
+
+.doc-header {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background: var(--color-dark);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.doc-header__bar {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding: 0.75rem var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+.doc-header .brand__name { color: #fff; }
+.doc-header__back {
+  color: #eee;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.doc-header__back:hover { color: var(--color-primary); }
+
+.doc {
+  max-width: 78ch;
+  margin-inline: auto;
+  padding: var(--space-xl) var(--space-md) var(--space-2xl);
+}
+
+/* h1/h2 take the display face; h3/h4 stay in the body face so deep sections
+   don't shout. scroll-margin stops the sticky header covering a heading when
+   the table of contents jumps to it. */
+.doc h1, .doc h2, .doc h3, .doc h4 {
+  scroll-margin-top: 5rem;
+  line-height: 1.25;
+}
+.doc h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw + 1rem, 2.5rem);
+  text-transform: uppercase;
+  margin-bottom: var(--space-sm);
+}
+.doc h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1.5vw + 0.75rem, 1.6rem);
+  text-transform: uppercase;
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-sm);
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--color-primary);
+}
+.doc h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-xs);
+}
+.doc h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-xs);
+}
+
+.doc p { margin-bottom: var(--space-sm); color: var(--color-ink-soft); }
+.doc strong { color: var(--color-ink); }
+
+.doc a {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+.doc a:hover { text-decoration-thickness: 2px; }
+
+.doc ul, .doc ol {
+  margin: 0 0 var(--space-sm);
+  padding-left: 1.4rem;
+  color: var(--color-ink-soft);
+}
+.doc li { margin-bottom: 0.4rem; }
+.doc li > ul, .doc li > ol { margin-top: 0.4rem; }
+.doc ul { list-style: disc; }
+.doc ul ul { list-style: circle; }
+.doc ol { list-style: decimal; }
+
+.doc hr {
+  border: 0;
+  border-top: 1px solid var(--color-line);
+  margin-block: var(--space-lg);
+}
+
+/* Inline code sits inside running prose, so vertical padding stays minimal to
+   avoid changing the line box height. */
+.doc code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  overflow-wrap: anywhere;
+}
+.doc pre {
+  background: var(--color-dark);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  overflow-x: auto;
+  margin-bottom: var(--space-sm);
+}
+.doc pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #e8e8e8;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  overflow-wrap: normal;
+  white-space: pre;
+}
+
+.doc table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-sm);
+  font-size: 0.92rem;
+}
+.doc th, .doc td {
+  border: 1px solid var(--color-line);
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+}
+.doc th { background: var(--color-surface-alt); font-weight: 700; }
+
+.doc__footer {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-line);
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+.doc__footer a { font-weight: 700; }

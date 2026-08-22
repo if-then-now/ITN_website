@@ -9,7 +9,11 @@ Static HTML/CSS/JS. No build step, no dependencies, no package manager.
 
 - `itnwebsite/index.html` — the page
 - `itnwebsite/assets/` — every image the site uses, served locally
+- `itnwebsite/agent-ouija-how-to.html` — generated documentation page (see below)
 - `itnwebsite/src/css/styles.css` — all styling, design tokens live in `:root` at the top of the file
+- `itnwebsite/src/css/docs.css` — extra prose styling for documentation pages only
+- `docs-src/` — markdown sources for the documentation pages
+- `tools/build-docs.py` — renders `docs-src/*.md` into pages under `itnwebsite/`
 - `itnwebsite/src/js/main.js` — mobile nav, scroll-based nav highlighting, reveal-on-scroll, contact form handling; all tunable values live in the `SITE_CONFIG` object at the top of the file
 
 ## Run locally
@@ -25,6 +29,35 @@ cd itnwebsite
 python -m http.server 8000
 # then open http://localhost:8000/
 ```
+
+## Documentation pages
+
+Long-form docs live as markdown in `docs-src/` and are rendered to standalone
+HTML pages committed under `itnwebsite/`. The site itself still has no build step —
+this generator is run by hand when a source doc changes, so the published folder
+stays dependency-free:
+
+```bash
+python -m pip install --user markdown-it-py mdit-py-plugins
+python tools/build-docs.py
+```
+
+Then commit both the markdown and the regenerated HTML. Add new documents to the
+`DOCS` list at the top of `tools/build-docs.py`.
+
+Notes for whoever touches this next:
+
+- **markdown-it-py, not Python-Markdown.** Python-Markdown is not CommonMark
+  compliant and silently mis-renders a fenced code block nested inside a list
+  item — the SMTP config block came out as a single inline `<code>`, collapsing
+  six lines into one. It also flattened several nested lists.
+- **Heading slugs mimic GitHub's**, so anchors written into the markdown keep
+  working. Each space becomes one dash with no collapsing, which is what produces
+  the double dash in `#tab-1--agent-ouija` where an em dash sat between two
+  spaces. A slugifier that collapses runs breaks every table-of-contents link.
+- **The generator rewrites links that only make sense inside the app's own repo** —
+  `SETUP.md` references and the `agentouija` issue tracker, which is private and
+  would 404 for a visitor. Those adjustments live in `preprocess()`.
 
 ## Deploying
 

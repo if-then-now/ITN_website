@@ -11,6 +11,9 @@ Static HTML/CSS/JS. No build step, no dependencies, no package manager.
 - `src/css/styles.css` — all styling, design tokens live in `:root` at the top of the file
 - `src/js/main.js` — mobile nav, scroll-based nav highlighting, reveal-on-scroll, contact form handling; all tunable values live in the `SITE_CONFIG` object at the top of the file
 - `assets/` — every image the site uses, served locally (no external CDN dependency)
+- `agent-ouija-how-to.html` — generated from `../docs-src/HOW_TO.md`; regenerate with
+  `python ../tools/build-docs.py` rather than editing it by hand
+- `src/css/docs.css` — prose styling used only by the documentation pages
 
 Note that `url()` paths inside `styles.css` resolve relative to the stylesheet, so the hero
 background is `../../assets/hero.jpg` — not `assets/hero.jpg`.

@@ -572,6 +572,15 @@ h1, h2, h3, h4, p { margin: 0; }
   font-size: 0.85rem;
   color: var(--color-ink);
 }
+.project-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+.project-card__link:hover { text-decoration: underline; }
 
 /* ==========================================================================
    Community cards
