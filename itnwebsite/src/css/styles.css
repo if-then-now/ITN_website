@@ -572,6 +572,14 @@ h1, h2, h3, h4, p { margin: 0; }
   font-size: 0.85rem;
   color: var(--color-ink);
 }
+/* Wrapper so sibling links are spaced by a gap rather than by whatever
+   whitespace happens to sit between the tags, and so they stack cleanly in a
+   narrow card instead of overflowing. */
+.project-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+}
 .project-card__link {
   display: inline-flex;
   align-items: center;
