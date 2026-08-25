@@ -36,6 +36,11 @@ SRC = ROOT / "docs-src"
 OUT = ROOT / "itnwebsite"
 SITE = "https://ifthennow.com"
 
+# Public as of 2026-08-02. Relative links in the source resolve against this, so
+# a reader on the website gets the same files a reader on GitHub would.
+REPO = "https://github.com/if-then-now/agentouija"
+REPO_BLOB = f"{REPO}/blob/main"
+
 DOCS = [
     {
         "src": "HOW_TO.md",
@@ -71,22 +76,19 @@ def preprocess(md: str) -> str:
         md,
     )
 
-    # SETUP.md ships with the app and is not published here, so a link would 404.
-    # Keep the reference, drop the hyperlink.
-    md = re.sub(r"\[SETUP\.md\]\(SETUP\.md[^)]*\)", "`SETUP.md`", md)
+    # SETUP.md is a sibling file in the app's repo, so a bare relative link would
+    # 404 here. Resolve it against the repo, preserving any deep anchor.
+    md = re.sub(
+        r"\[SETUP\.md\]\(SETUP\.md([^)]*)\)",
+        lambda m: f"[SETUP.md]({REPO_BLOB}/SETUP.md{m.group(1)})",
+        md,
+    )
 
     # A localhost autolink is not clickable for a reader; show it as an address.
     md = md.replace("<http://localhost:7860>", "`http://localhost:7860`")
 
-    # The agentouija repo is not public, so its issues and discussions pages 404
-    # for anyone who clicks. Point at the site's own contact section instead.
-    md = re.sub(
-        r"- Bug reports: <https://github\.com/if-then-now/agentouija/issues>\.\s*\n"
-        r"- Feedback / feature requests: same repo, discussions tab\.\s*\n",
-        "- Bug reports, feedback and feature requests: "
-        f"[get in touch via ifthennow.com]({SITE}/#contact).\n",
-        md,
-    )
+    # The repo's own issue and discussion links pass through untouched now that it
+    # is public — a reader can actually use them.
 
     # Two of the five table-of-contents links are dead in the source: the Tab 4 and
     # Tab 5 headings carry a trailing subtitle, so they slugify to something longer
